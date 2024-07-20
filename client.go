@@ -22,10 +22,11 @@ var (
 // ErrStatusCode can be returned in case request to server resulted in wrong status code.
 type ErrStatusCode struct {
 	Code int
+	Body []byte
 }
 
 func (e ErrStatusCode) Error() string {
-	return fmt.Sprintf("wrong status code: %d", e.Code)
+	return fmt.Sprintf("wrong status code: %d, body: %s", e.Code, string(e.Body))
 }
 
 // Config of client.
@@ -407,7 +408,8 @@ func (c *Client) send(ctx context.Context, commands []Command) ([]Reply, error) 
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, ErrStatusCode{resp.StatusCode}
+		respBody, _ := io.ReadAll(resp.Body)
+		return nil, ErrStatusCode{resp.StatusCode, respBody}
 	}
 
 	var replies []Reply
