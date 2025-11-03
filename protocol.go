@@ -102,7 +102,7 @@ type HistoryResult struct {
 
 type ChannelInfo struct {
 	NumUsers   int32 `json:"num_users"`
-	NumClients int32 `json:"num_clients,omitempty"`
+	NumClients int32 `json:"num_clients"`
 }
 
 // ChannelsResult is a result of channels command.
